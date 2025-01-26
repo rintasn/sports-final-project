@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";  
 import { ToastContainer } from 'react-toastify'; // Import ToastContainer  
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS untuk Toast  
+import { Toaster } from "@/components/ui/toaster"
   
 const geistSans = Geist({  
   variable: "--font-geist-sans",  
@@ -32,6 +33,7 @@ export default function RootLayout({
       >  
         {children}  
         <ToastContainer /> {/* Tambahkan ToastContainer di sini */}  
+        <Toaster />
       </body>  
     </html>  
   );  

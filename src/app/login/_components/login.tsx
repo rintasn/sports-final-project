@@ -35,10 +35,11 @@ const Login: React.FC<LoginProps> = ({ baseUrl, onRegisterClick, router }) => {
     } else {          
       // Handle successful login          
       toast.success(data.message || 'Login successful');          
-      console.log('Login successful', data);       
+      console.log('Login successful', data);    
     
       // Simpan token dan data pengguna ke localStorage      
       localStorage.setItem('token', data.data.token);      
+      localStorage.setItem('BEARER_TOKEN', data.data.token);      
       localStorage.setItem('user', JSON.stringify({      
         name: data.data.name,      
         email: data.data.email,      
