@@ -20,7 +20,7 @@ const Navbar = ({ categories }: NavbarProps) => {
         <ul className="menu menu-horizontal px-1">  
           {categories.map(category => (  
             <li key={category.id}>  
-              <Link href={`/categories/${category.id}`}>{category.name}</Link>  
+              <Link href={`/home/cabang-olahraga/${category.id}`}>{category.name}</Link>  
             </li>  
           ))} 
         </ul>  
