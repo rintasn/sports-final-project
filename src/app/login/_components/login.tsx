@@ -20,40 +20,65 @@ const Login: React.FC<LoginProps> = ({ baseUrl, onRegisterClick, router }) => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-
-    const response = await fetch(`${baseUrl}/api/v1/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      setError(data.message || 'Login failed');
-      toast.error(data.message || 'Login failed');
-    } else {
-      // Handle successful login          
-      toast.success(data.message || 'Login successful');
-      console.log('Login successful', data);
-
-      // Simpan token dan data pengguna ke localStorage      
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('BEARER_TOKEN', data.data.token);
-      localStorage.setItem('user', JSON.stringify({
-        name: data.data.name,
-        email: data.data.email,
-      }));
-
-      // Redirect to /user after successful login    
-      router.push('/user'); // Redirect to the user page    
-    }
-  };
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {  
+    e.preventDefault();  
+    setError(null);  
+    
+    try {  
+      // Step 1: Login  
+      const loginResponse = await fetch(`${baseUrl}/api/v1/login`, {  
+        method: 'POST',  
+        headers: {  
+          'Content-Type': 'application/json',  
+        },  
+        body: JSON.stringify({ email, password }),  
+      });  
+    
+      const loginData = await loginResponse.json();  
+    
+      if (!loginResponse.ok) {  
+        setError(loginData.message || 'Login failed');  
+        toast.error(loginData.message || 'Login failed');  
+        return;  
+      }  
+    
+      // Step 2: Simpan token ke localStorage  
+      const token = loginData.data.token;  
+      localStorage.setItem('token', token);  
+      localStorage.setItem('BEARER_TOKEN', token);  
+    
+      // Step 3: Ambil detail profil pengguna  
+      const profileResponse = await fetch(`${baseUrl}/api/v1/me`, {  
+        method: 'GET',  
+        headers: {  
+          'Authorization': `Bearer ${token}`,  
+          'Content-Type': 'application/json',  
+        },  
+      });  
+    
+      const profileData = await profileResponse.json();  
+    
+      if (!profileResponse.ok) {  
+        throw new Error(profileData.message || 'Failed to fetch profile data');  
+      }  
+    
+      // Step 4: Simpan detail profil ke localStorage  
+      localStorage.setItem('user', JSON.stringify(profileData.data));  
+    
+      // Step 5: Tampilkan pesan sukses dan redirect ke /user atau /admin berdasarkan role  
+      toast.success('Login successful');  
+      const role = profileData.data.role;  
+      if (role === 'admin') {  
+        router.push('/admin');  
+      } else {  
+        router.push('/user');  
+      }  
+    } catch (err) {  
+      setError(err instanceof Error ? err.message : 'An error occurred');  
+      toast.error(err instanceof Error ? err.message : 'An error occurred');  
+    }  
+  };  
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-transparent">

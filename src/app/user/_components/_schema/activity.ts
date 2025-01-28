@@ -11,6 +11,12 @@ export interface SportActivity {
     slot: number;
     start_time: string;
     end_time: string;
+    sport_category_id: number;
+    city_id: number;
+    created_at: string;
+    updated_at: string;
+    map_url: string;
+    image_url: string;
     organizer: {
       name: string;
     };

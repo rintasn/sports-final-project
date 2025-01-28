@@ -92,7 +92,7 @@ const Register: React.FC<RegisterProps> = ({ baseUrl }) => {
             className="select select-bordered w-full"  
           >  
             <option value="user">User</option>  
-            {/* <option value="admin">Admin</option>   */}
+            <option value="admin">Admin</option>  
           </select>  
         </div>  
         <button type="submit" className="btn btn-primary w-full">Register</button>  

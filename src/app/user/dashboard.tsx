@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SportActivity } from "./_components/_schema/activity";
 
 const menuItems = [
-  { name: 'My Transaction', href: '/user', icon: '💰' },
+  { name: 'All Transaction', href: '/user', icon: '💰' },
   { name: 'Sport Activity', href: '/sport-activity', icon: '🏃‍♂️' },
   { name: 'Sport Category', href: '/sport-category', icon: '🏅' },
   { name: 'File Upload', href: '/file-upload', icon: '📁' },
@@ -37,7 +37,7 @@ export default function Page() {
 
   const fetchTransactions = async () => {
     const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
-    const API_ENDPOINT = `/api/v1/my-transaction?is_paginate=true&per_page=10&page=${currentPage}&search=${searchTerm}`;
+    const API_ENDPOINT = `/api/v1/all-transaction?is_paginate=true&per_page=10&page=${currentPage}&search=${searchTerm}`;
     const BEARER_TOKEN = localStorage.getItem('BEARER_TOKEN');
 
     if (!BEARER_TOKEN) {
