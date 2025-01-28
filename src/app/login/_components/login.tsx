@@ -57,34 +57,6 @@ const Login: React.FC<LoginProps> = ({ baseUrl, onRegisterClick, router }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-transparent">
-      {/* <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">          
-        <h2 className="text-2xl font-bold text-center mb-4">Login</h2>          
-        {error && <p className="text-red-500 text-center">{error}</p>}          
-        <div className="mb-4">          
-          <label className="block text-gray-700">Email</label>          
-          <input          
-            type="email"          
-            value={email}          
-            onChange={(e) => setEmail(e.target.value)}          
-            className="input input-bordered w-full"          
-            required          
-          />          
-        </div>          
-        <div className="mb-4">          
-          <label className="block text-gray-700">Password</label>          
-          <input          
-            type="password"          
-            value={password}          
-            onChange={(e) => setPassword(e.target.value)}          
-            className="input input-bordered w-full"          
-            required          
-          />          
-        </div>          
-        <button type="submit" className="btn btn-primary w-full">Login</button>        
-        <p className="text-center mt-4">Belum punya akun? <a href="/register" className="text-blue-500">Register</a></p>            
-      </form>    */}
-
-
       <div className={cn("flex flex-col gap-6")}>
         <Card className="overflow-hidden">
           <CardContent className="grid p-0 md:grid-cols-2">
