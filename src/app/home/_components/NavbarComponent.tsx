@@ -1,51 +1,44 @@
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import Navbar from "./_components/navbar";
-import Hero from "./_components/hero";
-import VenueSection from "./_components/venuesection";
-import SparringSection from "./_components/SparringSection";
-import CompetitionSection from "./_components/CompetitionSection";
-import TestimonialSection from "./_components/TestimonialSection";
-import Footer from "./_components/Footer";
-import FilterSelect from "./_components/FilterSelect";
+import Navbar from "./navbar";
 
 // Define the schema using zod
 const CategorySchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  created_at: z.string(),
-  updated_at: z.string(),
-});
-
-const ApiResponseSchema = z.object({
-  error: z.boolean(),
-  result: z.object({
-    current_page: z.number(),
-    data: z.array(CategorySchema),
-    first_page_url: z.string(),
-    from: z.number(),
-    last_page: z.number(),
-    last_page_url: z.string(),
-    links: z.array(
-      z.object({
-        url: z.string().nullable(),
-        label: z.string(),
-        active: z.boolean(),
-      })
-    ),
-    next_page_url: z.string().nullable(),
-    path: z.string(),
-    per_page: z.number(),
-    prev_page_url: z.string().nullable(),
-    to: z.number(),
-    total: z.number(),
-  }),
-});
-
-type Category = z.infer<typeof CategorySchema>;
+    id: z.number(),
+    name: z.string(),
+    created_at: z.string(),
+    updated_at: z.string(),
+  });
+  
+  const ApiResponseSchema = z.object({
+    error: z.boolean(),
+    result: z.object({
+      current_page: z.number(),
+      data: z.array(CategorySchema),
+      first_page_url: z.string(),
+      from: z.number(),
+      last_page: z.number(),
+      last_page_url: z.string(),
+      links: z.array(
+        z.object({
+          url: z.string().nullable(),
+          label: z.string(),
+          active: z.boolean(),
+        })
+      ),
+      next_page_url: z.string().nullable(),
+      path: z.string(),
+      per_page: z.number(),
+      prev_page_url: z.string().nullable(),
+      to: z.number(),
+      total: z.number(),
+    }),
+  });
+  
+  type Category = z.infer<typeof CategorySchema>;
 
 export default function Home() {
-  const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
+const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -90,7 +83,6 @@ export default function Home() {
 
     fetchCategories();
   }, []);
-
   return (
     <main>
       {loading ? (
@@ -100,13 +92,6 @@ export default function Home() {
       ) : (
         <Navbar categories={categories} />
       )}
-      <Hero />
-      <FilterSelect/>
-      <VenueSection />
-      <SparringSection />
-      <CompetitionSection />
-      <TestimonialSection />
-      <Footer />
     </main>
   );
 }

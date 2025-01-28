@@ -15,7 +15,7 @@ const CompetitionSection = () => {
             <div className="card bg-base-100 shadow-xl">
               <figure>
                 <Image
-                  src="/competition-1.jpg"
+                  src="https://ayo.co.id/assets/dummy/new_kompetisi_home1.png"
                   alt="Competition"
                   width={400}
                   height={300}
@@ -26,7 +26,7 @@ const CompetitionSection = () => {
             <div className="card bg-base-100 shadow-xl">
               <figure>
                 <Image
-                  src="/competition-2.jpg"
+                  src="https://ayo.co.id/assets/dummy/new_kompetisi_home2.png"
                   alt="Competition"
                   width={400}
                   height={300}
@@ -37,7 +37,7 @@ const CompetitionSection = () => {
             <div className="card bg-base-100 shadow-xl">
               <figure>
                 <Image
-                  src="/competition-3.jpg"
+                  src="https://ayo.co.id/assets/dummy/new_kompetisi_home3.png"
                   alt="Competition"
                   width={400}
                   height={300}

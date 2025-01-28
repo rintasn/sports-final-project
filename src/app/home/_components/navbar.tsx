@@ -13,7 +13,7 @@ const Navbar = ({ categories }: NavbarProps) => {
     <div className="navbar bg-base-100">  
       <div className="navbar-start">  
         <Link href="/">  
-          <Image src="/logo-ayo.svg" alt="AYO Logo" width={100} height={40} />  
+          <Image src="https://ayo.co.id/assets/logo/new-logo.svg" alt="AYO Logo" width={100} height={40} />  
         </Link>  
       </div>  
       <div className="navbar-center hidden lg:flex">  
@@ -27,7 +27,7 @@ const Navbar = ({ categories }: NavbarProps) => {
       </div>  
       <div className="navbar-end">  
         <Link href="/login" className="btn btn-ghost">Masuk</Link>  
-        <Link href="/register" className="btn btn-primary">Daftar</Link>  
+        <Link href="/register" className="btn btn-ghost ml-2 text-red-900">Daftar</Link>  
       </div>  
     </div>  
   );  

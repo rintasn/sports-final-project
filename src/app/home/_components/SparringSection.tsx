@@ -7,7 +7,7 @@ const SparringSection = () => {
         <div className="flex flex-col lg:flex-row items-center gap-12">
           <div className="lg:w-1/2">
             <Image
-              src="/sparring-app.png"
+              src="https://ayo.co.id/assets/img/hp-ayo2.png"
               alt="AYO Sparring Feature"
               width={400}
               height={800}

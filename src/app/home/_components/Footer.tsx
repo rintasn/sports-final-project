@@ -6,7 +6,7 @@ const Footer = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="col-span-1 lg:col-span-2">
-              <Image src="/logo-ayo.svg" alt="AYO Logo" width={120} height={40} />
+              <Image src="https://ayo.co.id/assets/logo/new-logo.svg" alt="AYO Logo" width={120} height={40} />
               <p className="mt-4 text-sm text-gray-600">PT Ayo Indonesia Maju</p>
               <p className="text-sm text-gray-600">Jl. Wahid Hasyim No. 10D</p>
               <p className="text-sm text-gray-600">Jakarta Pusat 10340</p>

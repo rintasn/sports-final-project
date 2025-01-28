@@ -12,7 +12,7 @@ const TestimonialSection = () => {
               <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg">
                 <div className="flex items-center gap-4 mb-4">
                   <Image
-                    src="/testimonial-1.jpg"
+                    src="https://ayo.co.id/assets/logo/new-logo.svg"
                     alt="Testimonial"
                     width={60}
                     height={60}
