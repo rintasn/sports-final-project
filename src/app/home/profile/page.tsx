@@ -4,7 +4,7 @@
 import dynamic from 'next/dynamic';  
   
 const Dashboard = dynamic(  
-  () => import('./home/dashboard'),  
+  () => import('./dashboard'),  
   { ssr: false }  
 );  
   

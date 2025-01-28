@@ -69,9 +69,9 @@ const Login: React.FC<LoginProps> = ({ baseUrl, onRegisterClick, router }) => {
       toast.success('Login successful');  
       const role = profileData.data.role;  
       if (role === 'admin') {  
-        router.push('/admin');  
-      } else {  
         router.push('/user');  
+      } else {  
+        router.push('/home');  
       }  
     } catch (err) {  
       setError(err instanceof Error ? err.message : 'An error occurred');  

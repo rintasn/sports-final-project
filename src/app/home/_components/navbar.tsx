@@ -1,36 +1,65 @@
-import Image from 'next/image';  
-import Link from 'next/link';  
-  
-type NavbarProps = {  
-  categories: {  
-    id: number;  
-    name: string;  
-  }[];  
-};  
-  
-const Navbar = ({ categories }: NavbarProps) => {  
-  return (  
-    <div className="navbar bg-base-100">  
-      <div className="navbar-start">  
-        <Link href="/">  
-          <Image src="https://ayo.co.id/assets/logo/new-logo.svg" alt="AYO Logo" width={100} height={40} />  
-        </Link>  
-      </div>  
-      <div className="navbar-center hidden lg:flex">  
-        <ul className="menu menu-horizontal px-1">  
-          {categories.map(category => (  
-            <li key={category.id}>  
-              <Link href={`/home/cabang-olahraga/${category.id}`}>{category.name}</Link>  
-            </li>  
-          ))} 
-        </ul>  
-      </div>  
-      <div className="navbar-end">  
-        <Link href="/login" className="btn btn-ghost">Masuk</Link>  
-        <Link href="/register" className="btn btn-ghost ml-2 text-red-900">Daftar</Link>  
-      </div>  
-    </div>  
-  );  
-};  
-  
-export default Navbar;  
+import Link from 'next/link';
+import Image from 'next/image';
+import { Home, ShoppingCart, CreditCard, User, Airplay } from 'lucide-react';
+
+type NavbarProps = {
+  categories: {
+    id: number;
+    name: string;
+  }[];
+};
+
+const Navbar = ({ categories }: NavbarProps) => {
+  // Retrieve the user data from localStorage
+  const userData = localStorage.getItem('user');
+  const userObject = userData ? JSON.parse(userData) : null;
+
+  // Access the 'role' property from the user object
+  const role = userObject ? userObject.role : null;
+
+  return (
+    <div className="navbar bg-base-100">
+      <div className="navbar-start">
+        <Link href="/">
+          <Image src="https://ayo.co.id/assets/logo/new-logo.svg" alt="AYO Logo" width={100} height={40} />
+        </Link>
+      </div>
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1">
+          {categories.map(category => (
+            <li key={category.id}>
+              <a href={`/home/cabang-olahraga?sport_category_id=${category.id}`}>{category.name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="navbar-end">
+        {role ? (
+          <>
+            {role === 'admin' && (
+              <Link href="/admin" className="btn btn-ghost">
+                <Airplay className="w-6 h-6" />
+              </Link>
+            )}
+            {/* <Link href="/home/cart" className="btn btn-ghost">
+              <ShoppingCart className="w-6 h-6" />
+            </Link> */}
+            <Link href="/home/my-transactions" className="btn btn-ghost ml-2">
+              <CreditCard className="w-6 h-6" />
+            </Link>
+            <Link href="/home/profile" className="btn btn-ghost ml-2">
+              <User className="w-6 h-6" />
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link href="/login" className="btn btn-ghost">Masuk</Link>
+            <Link href="/register" className="btn btn-ghost ml-2 text-red-900">Daftar</Link>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;
