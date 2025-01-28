@@ -5,8 +5,7 @@ const nextConfig: NextConfig = {
     domains: ['ayo.co.id'],  
   },  
   // other config options here  
-  reactStrictMode: true,  
-  swcMinify: true,  
+  reactStrictMode: true, 
 };  
   
 export default nextConfig;  
