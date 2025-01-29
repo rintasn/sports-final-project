@@ -1,6 +1,8 @@
+const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { Home, ShoppingCart, CreditCard, User, Airplay } from 'lucide-react';
+import { Home, ShoppingCart, CreditCard, User, Airplay, LogOut } from 'lucide-react';
 
 type NavbarProps = {
   categories: {
@@ -16,6 +18,29 @@ const Navbar = ({ categories }: NavbarProps) => {
 
   // Access the 'role' property from the user object
   const role = userObject ? userObject.role : null;
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add any necessary authentication headers here if required
+        },
+      });
+
+      if (response.ok) {
+        // Clear user data from localStorage
+        localStorage.removeItem('user');
+        // Refresh the page
+        window.location.reload();
+      } else {
+        console.error('Logout failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
 
   return (
     <div className="navbar bg-base-100">
@@ -50,6 +75,9 @@ const Navbar = ({ categories }: NavbarProps) => {
             <Link href="/home/profile" className="btn btn-ghost ml-2">
               <User className="w-6 h-6" />
             </Link>
+            <button onClick={handleLogout} className="btn btn-ghost ml-2">
+              <LogOut className="w-6 h-6" />
+            </button>
           </>
         ) : (
           <>
