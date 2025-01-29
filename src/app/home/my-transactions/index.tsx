@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import UploadDialog from "../../user/_components/UploadDialog";
 import { Input } from "@/components/ui/input"; // Ensure you have an Input component
 import { toast } from "react-toastify";
+import DOMPurify from "dompurify";
 
 // Define types for the transaction data
 interface TransactionItem {
@@ -179,7 +180,12 @@ export default function Home() {
         return;
       }
 
-      setTransactions(data.result.data);
+      // Sort transactions by order_date in descending order
+      const sortedTransactions = data.result.data.sort((a, b) => {
+        return new Date(b.order_date).getTime() - new Date(a.order_date).getTime();
+      });
+
+      setTransactions(sortedTransactions);
       setCurrentPage(data.result.current_page);
       setLastPage(data.result.last_page);
     } catch (error) {
@@ -316,12 +322,11 @@ export default function Home() {
     <main className="min-h-screen bg-gray-100">
       <Navbar />
       <header className="bg-red-500 text-white py-12 px-6 mb-8 rounded-lg">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl font-bold mb-4">MY TRANSACTION</h1>
-            </div>
-          </header>
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl font-bold mb-4">MY TRANSACTION</h1>
+        </div>
+      </header>
       <div className="container mx-auto px-4 py-8">
-      
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <input
           type="text"
@@ -373,18 +378,6 @@ export default function Home() {
                     <span className="text-gray-600">
                       {transaction.transaction_items.title}
                     </span>
-
-                    <span className="text-gray-600 font-medium">
-                      Description:
-                    </span>
-                    <span
-                      className="text-gray-600"
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          transaction.transaction_items.sport_activities
-                            .description,
-                      }}
-                    />
                   </div>
 
                   <button
@@ -423,31 +416,48 @@ export default function Home() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
             <h2 className="text-2xl font-bold mb-4">Transaction Details</h2>
-            <p className="text-gray-600">
-              Invoice ID: {selectedTransaction.invoice_id}
-            </p>
-            <p className="text-gray-600">
-              Status: {selectedTransaction.status}
-            </p>
-            <p className="text-gray-600">
-              Total Amount: {selectedTransaction.total_amount}
-            </p>
-            <p className="text-gray-600">
-              Order Date: {selectedTransaction.order_date}
-            </p>
-            <p className="text-gray-600">
-              Expired Date: {selectedTransaction.expired_date}
-            </p>
-            <p className="text-gray-600">
-              Title: {selectedTransaction.transaction_items.title}
-            </p>
-            <p className="text-gray-600">
-              Description:{" "}
-              {
-                selectedTransaction.transaction_items.sport_activities
-                  .description
-              }
-            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-gray-600 font-medium">Invoice ID:</div>
+              <div className="text-gray-600">
+                {selectedTransaction.invoice_id}
+              </div>
+
+              <div className="text-gray-600 font-medium">Status:</div>
+              <div className="text-gray-600">
+                {selectedTransaction.status}
+              </div>
+
+              <div className="text-gray-600 font-medium">Total Amount:</div>
+              <div className="text-gray-600">
+                {selectedTransaction.total_amount}
+              </div>
+
+              <div className="text-gray-600 font-medium">Order Date:</div>
+              <div className="text-gray-600">
+                {selectedTransaction.order_date}
+              </div>
+
+              <div className="text-gray-600 font-medium">Expired Date:</div>
+              <div className="text-gray-600">
+                {selectedTransaction.expired_date}
+              </div>
+
+              <div className="text-gray-600 font-medium">Title:</div>
+              <div className="text-gray-600">
+                {selectedTransaction.transaction_items.title}
+              </div>
+
+              <div className="text-gray-600 font-medium">Description:</div>
+              <div
+                className="text-gray-600"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    selectedTransaction.transaction_items.sport_activities
+                      .description
+                  ),
+                }}
+              />
+            </div>
 
             {/* Open Upload Dialog */}
             <Button onClick={openUploadDialogHandler} className="mt-4">

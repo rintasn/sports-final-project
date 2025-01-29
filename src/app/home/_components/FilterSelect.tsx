@@ -1,4 +1,3 @@
-// FilterSelect.tsx
 import React, { useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
@@ -20,13 +19,13 @@ const fetcher = (url: string) => axiosInstance.get(url).then(res => res.data);
 export default function FilterSelect() {
   const [selectedProvinceId, setSelectedProvinceId] = useState<number | null>(null);
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  const [selectedSportId, setSelectedSportId] = useState<number | null>(null);
 
   const { data: locationsProvinceData, error: locationsProvinceError } = useSWR(
     "/api/v1/location/provinces?is_paginate=true&per_page=500&page=1", 
     fetcher
   );
 
-  // Only fetch cities when a province is selected
   const { data: citiesData } = useSWR(
     selectedProvinceId ? `/api/v1/location/cities/${selectedProvinceId}` : null,
     fetcher
@@ -62,12 +61,20 @@ export default function FilterSelect() {
 
   const handleProvinceChange = (provinceId: number, provinceName: string) => {
     setSelectedProvinceId(provinceId);
-    // Reset city selection when province changes
     setSelectedCityId(null);
   };
 
   const handleCityChange = (cityId: number) => {
     setSelectedCityId(cityId);
+  };
+
+  const handleSportBranchChange = (sportId: number) => {
+    setSelectedSportId(sportId);
+  };
+
+  // Generate search URL based on selected values
+  const getSearchUrl = () => {
+    return `/home/cabang-olahraga?sport_category_id=${selectedSportId || ''}&city_id=${selectedCityId || ''}`;
   };
 
   return (  
@@ -126,7 +133,7 @@ export default function FilterSelect() {
             <div className="relative">
               <SportsBranchSelect
                 sportsBranches={sportsBranches}
-                onBranchChange={(id) => console.log("Selected Branch ID:", id)}
+                onBranchChange={handleSportBranchChange}
               />
               <div className="absolute inset-x-0 top-full bg-white rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-50" />
             </div>
@@ -140,9 +147,12 @@ export default function FilterSelect() {
               <span className="text-white font-medium"></span>
             </div>
             <div className="relative">
-              <button className="bg-white text-primary font-medium px-6 py-2 rounded-lg hover:bg-gray-100 transition-colors h-full w-full">
+              <a 
+                href={getSearchUrl()}
+                className="inline-block bg-white text-primary font-medium px-6 py-2 rounded-lg hover:bg-gray-100 transition-colors h-full w-full text-center"
+              >
                 Temukan
-              </button>
+              </a>
               <div className="absolute inset-x-0 top-full bg-white rounded-b-lg shadow-lg max-h-60 overflow-y-auto z-50" />
             </div>
           </div>

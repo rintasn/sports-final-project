@@ -18,6 +18,23 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ locations, onLocationCh
   const [filteredLocations, setFilteredLocations] = useState(locations);
   const searchRef = useRef<HTMLDivElement>(null);
 
+  // Set default value from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const cityId = urlParams.get('city_id');
+    
+    if (cityId) {
+      const selectedLocation = locations.find(
+        location => location.city_id === Number(cityId)
+      );
+      
+      if (selectedLocation) {
+        setSearchTerm(selectedLocation.city_name);
+        onLocationChange({ city_id: selectedLocation.city_id });
+      }
+    }
+  }, [locations, onLocationChange]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -29,12 +46,11 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ locations, onLocationCh
     );
       
     setFilteredLocations(filtered);
-    onLocationChange(value);
   };
 
-  const handleLocationSelect = (cityId: string, city_name: string) => {
-    setSearchTerm(city_name);
-    onLocationChange(cityId);
+  const handleLocationSelect = (location: z.infer<typeof locationSchema>) => {
+    setSearchTerm(location.city_name);
+    onLocationChange(location);
     setIsOpen(false);
   };
 
@@ -73,7 +89,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ locations, onLocationCh
         className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
       />
 
-      {isOpen && searchTerm && (
+      {isOpen && (
         <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="max-h-60 overflow-y-auto">
             {filteredLocations.length > 0 ? (
@@ -81,7 +97,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({ locations, onLocationCh
                 {filteredLocations.map(location => (
                   <li
                     key={location.city_id}
-                    onClick={() => handleLocationSelect(location.city_id.toString(), location.city_name)}
+                    onClick={() => handleLocationSelect(location)}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                   >
                     {location.city_name}

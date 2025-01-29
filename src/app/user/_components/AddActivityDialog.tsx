@@ -27,6 +27,8 @@ export default function AddActivityDialog({ isOpen, onOpenChange, onAdd }: AddAc
   const { toast } = useToast();
   const [sportCategories, setSportCategories] = useState<SportCategory[]>([]);
   const [cities, setCities] = useState<City[]>([]);
+  const [filteredCities, setFilteredCities] = useState<City[]>([]);
+  const [searchCity, setSearchCity] = useState<string>('');
   const [formData, setFormData] = useState({
     sport_category_id: "",
     city_id: "",
@@ -51,7 +53,7 @@ export default function AddActivityDialog({ isOpen, onOpenChange, onAdd }: AddAc
       try {
         // Fetch sport categories
         const sportCategoriesResponse = await fetch(
-          `${BASE_URL}/api/v1/sport-categories?is_paginate=true&per_page=10&page=1`,
+          `${BASE_URL}/api/v1/sport-categories?is_paginate=true&per_page=1000&page=1`,
           {
             headers: {
               'Authorization': `Bearer ${BEARER_TOKEN}`,
@@ -65,7 +67,7 @@ export default function AddActivityDialog({ isOpen, onOpenChange, onAdd }: AddAc
 
         // Fetch cities
         const citiesResponse = await fetch(
-          `${BASE_URL}/api/v1/location/cities?is_paginate=true&per_page=5&page=1`,
+          `${BASE_URL}/api/v1/location/cities?is_paginate=true&per_page=5000&page=1`,
           {
             headers: {
               'Authorization': `Bearer ${BEARER_TOKEN}`,
@@ -75,6 +77,7 @@ export default function AddActivityDialog({ isOpen, onOpenChange, onAdd }: AddAc
         const citiesData = await citiesResponse.json();
         if (!citiesData.error) {
           setCities(citiesData.result.data);
+          setFilteredCities(citiesData.result.data);
         }
       } catch (err) {
         toast({
@@ -101,6 +104,16 @@ export default function AddActivityDialog({ isOpen, onOpenChange, onAdd }: AddAc
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleCitySearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchCity(value);
+    setFilteredCities(
+      cities.filter(city =>
+        city.city_name_full.toLowerCase().includes(value.toLowerCase())
+      )
+    );
   };
 
   const handleSubmit = async () => {
@@ -184,7 +197,14 @@ export default function AddActivityDialog({ isOpen, onOpenChange, onAdd }: AddAc
                 <SelectValue placeholder="Select a city" />
               </SelectTrigger>
               <SelectContent>
-                {cities.map((city) => (
+                <div className="p-2">
+                  <Input
+                    placeholder="Search city..."
+                    value={searchCity}
+                    onChange={handleCitySearch}
+                  />
+                </div>
+                {filteredCities.map((city) => (
                   <SelectItem key={city.city_id} value={city.city_id.toString()}>
                     {city.city_name_full}
                   </SelectItem>
