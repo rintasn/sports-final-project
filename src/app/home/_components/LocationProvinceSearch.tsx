@@ -1,67 +1,55 @@
-// LocationSearch.tsx
+// LocationProvinceSearch.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { z } from 'zod';
 
 const locationSchema = z.object({    
-  city_id: z.number(),    
-  city_name: z.string(),    
+  province_id: z.number(),    
+  province_name: z.string(),    
 });    
 
-type LocationSearchProps = {    
-  locations: z.infer<typeof locationSchema>[];    
-  onLocationChange: (cityId: number) => void;
-  isDisabled: boolean;
-  selectedCityId: number | null;
+type LocationProvinceSearchProps = {    
+  provinces: z.infer<typeof locationSchema>[];    
+  onProvinceChange: (provinceId: number, provinceName: string) => void;
+  selectedProvinceId: number | null;
 };    
 
-const LocationSearch: React.FC<LocationSearchProps> = ({ 
-  locations, 
-  onLocationChange,
-  isDisabled,
-  selectedCityId
+const LocationProvinceSearch: React.FC<LocationProvinceSearchProps> = ({ 
+  provinces, 
+  onProvinceChange,
+  selectedProvinceId
 }) => {    
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredLocations, setFilteredLocations] = useState(locations);
+  const [filteredLocations, setFilteredLocations] = useState(provinces);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Reset search when locations change or when disabled
   useEffect(() => {
-    if (isDisabled || locations.length === 0) {
-      setSearchTerm('');
-      setFilteredLocations([]);
-    } else {
-      setFilteredLocations(locations);
-    }
-  }, [locations, isDisabled]);
-
-  // Update search term when selectedCityId changes
-  useEffect(() => {
-    if (selectedCityId === null) {
+    // Update search term when selectedProvinceId changes
+    if (selectedProvinceId === null) {
       setSearchTerm('');
     } else {
-      const selectedCity = locations.find(city => city.city_id === selectedCityId);
-      if (selectedCity) {
-        setSearchTerm(selectedCity.city_name);
+      const selectedProvince = provinces.find(p => p.province_id === selectedProvinceId);
+      if (selectedProvince) {
+        setSearchTerm(selectedProvince.province_name);
       }
     }
-  }, [selectedCityId, locations]);
+  }, [selectedProvinceId, provinces]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
     setIsOpen(true);
       
-    const filtered = locations.filter(location =>
-      location.city_name.toLowerCase().includes(value.toLowerCase())
+    const filtered = provinces.filter(province =>
+      province.province_name.toLowerCase().includes(value.toLowerCase())
     );
       
     setFilteredLocations(filtered);
   };
 
-  const handleLocationSelect = (location: z.infer<typeof locationSchema>) => {
-    setSearchTerm(location.city_name);
-    onLocationChange(location.city_id);
+  const handleLocationSelect = (province: z.infer<typeof locationSchema>) => {
+    setSearchTerm(province.province_name);
+    onProvinceChange(province.province_id, province.province_name);
     setIsOpen(false);
   };
 
@@ -91,28 +79,25 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
     <div ref={searchRef} className="relative w-full">
       <input    
         type="text"    
-        placeholder={isDisabled ? "Pilih provinsi terlebih dahulu" : "Pilih Kota"}    
+        placeholder="Pilih Provinsi"    
         value={searchTerm}
         onChange={handleInputChange}
-        onFocus={() => !isDisabled && setIsOpen(true)}
-        disabled={isDisabled}
-        className={`w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
-          isDisabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
-        }`}
+        onFocus={() => setIsOpen(true)}
+        className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
       />
 
-      {isOpen && !isDisabled && (
+      {isOpen && (
         <div className="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="max-h-60 overflow-y-auto">
             {filteredLocations.length > 0 ? (
               <ul className="divide-y divide-gray-100">
-                {filteredLocations.map(location => (
+                {filteredLocations.map(province => (
                   <li
-                    key={location.city_id}
-                    onClick={() => handleLocationSelect(location)}
+                    key={province.province_id}
+                    onClick={() => handleLocationSelect(province)}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                   >
-                    {location.city_name}
+                    {province.province_name}
                   </li>
                 ))}
               </ul>
@@ -126,4 +111,4 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   );    
 };    
 
-export default LocationSearch;
+export default LocationProvinceSearch;
