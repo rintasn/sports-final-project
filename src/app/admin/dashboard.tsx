@@ -10,6 +10,8 @@ import SportActivityDrawer from "./_components/SportActivityDrawer";
 import ActivityDetailDrawer from "./_components/ActivityDetailDrawer";
 import SportCategoryDrawer from "./_components/SportCategoryDrawer";
 import { useToast } from "@/hooks/use-toast";
+import { LogOut } from 'lucide-react';
+import { useRouter } from 'next/router'; // Import the useRouter hook from next/router
 // src/app/page.tsx
 
 import { SportActivity } from "./_components/_schema/activity";
@@ -34,6 +36,8 @@ export default function Page() {
   const [isSportCategoryDrawerOpen, setIsSportCategoryDrawerOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<SportActivity | null>(null);
   const { toast } = useToast();
+  const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
+  const router = useRouter(); // Initialize the router object using the useRouter hook
 
   const fetchTransactions = async () => {
     const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
@@ -74,6 +78,42 @@ export default function Page() {
     }
   };
 
+  const handleLogout = async () => {
+    const BEARER_TOKEN = localStorage.getItem('BEARER_TOKEN');
+    
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${BEARER_TOKEN}`,
+          // Add any necessary authentication headers here if required
+        },
+      });
+  
+      if (response.ok) {
+        // Clear user data from localStorage
+        localStorage.removeItem('user');
+        localStorage.removeItem('BEARER_TOKEN'); // Optionally clear the BEARER_TOKEN as well
+  
+        // Show success toast notification
+        toast({
+          title: 'Logout Successful',
+          description: 'You have been successfully logged out.',
+          variant: 'default', // You can customize the variant if needed
+        });
+  
+        // Redirect to the home page
+        router.push('/home');
+      } else {
+        console.error('Logout failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+  
+
   useEffect(() => {
     fetchTransactions();
   }, [currentPage, searchTerm]);
@@ -86,6 +126,9 @@ export default function Page() {
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
+            <button onClick={handleLogout} className="btn btn-ghost ml-2">
+              <LogOut className="w-6 h-6" />
+            </button>
             <Breadcrumb />
           </div>
         </header>

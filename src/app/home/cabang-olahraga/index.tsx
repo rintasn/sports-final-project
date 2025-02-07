@@ -4,7 +4,7 @@ import VenueCard from "./_components/VenueCard";
 import Navbar from "../_components/NavbarComponent";
 import LocationSearch from "./_components/LocationSearch";
 import SportsBranchSelect from "./_components/SportsBranchSelect";
-import AddActivityDialog from "../../user/_components/AddActivityDialog";
+import AddActivityDialog from "../../admin/_components/AddActivityDialog";
 import { Button } from "@/components/ui/button";
 
 const axiosInstance = axios.create({

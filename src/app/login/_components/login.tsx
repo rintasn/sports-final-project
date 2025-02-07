@@ -69,7 +69,7 @@ const Login: React.FC<LoginProps> = ({ baseUrl, onRegisterClick, router }) => {
       toast.success('Login successful');  
       const role = profileData.data.role;  
       if (role === 'admin') {  
-        router.push('/user');  
+        router.push('/admin');  
       } else {  
         router.push('/home');  
       }  
@@ -168,7 +168,7 @@ const Login: React.FC<LoginProps> = ({ baseUrl, onRegisterClick, router }) => {
             </form>
             <div className="relative hidden bg-muted md:block">
               <img
-                src="/placeholder.svg"
+                src="https://ayo.co.id/assets/img/hp-ayo2.png"
                 alt="Image"
                 className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
               />

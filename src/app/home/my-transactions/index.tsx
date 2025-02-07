@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import UploadDialog from "../../user/_components/UploadDialog";
+import UploadDialog from "../../admin/_components/UploadDialog";
 import { Input } from "@/components/ui/input"; // Ensure you have an Input component
 import { toast } from "react-toastify";
 import DOMPurify from "dompurify";

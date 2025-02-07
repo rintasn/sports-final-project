@@ -3,6 +3,8 @@ const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
 import Link from 'next/link';
 import Image from 'next/image';
 import { Home, ShoppingCart, CreditCard, User, Airplay, LogOut } from 'lucide-react';
+import { useRouter } from 'next/router'; // Import the useRouter hook from next/router
+import { useToast } from "@/hooks/use-toast"; // Import the useToast hook
 
 type NavbarProps = {
   categories: {
@@ -15,6 +17,8 @@ const Navbar = ({ categories }: NavbarProps) => {
   // Retrieve the user data from localStorage
   const userData = localStorage.getItem('user');
   const userObject = userData ? JSON.parse(userData) : null;
+  const router = useRouter(); // Initialize the router object using the useRouter hook
+  const { toast } = useToast(); // Initialize the toast hook
 
   // Access the 'role' property from the user object
   const role = userObject ? userObject.role : null;
@@ -35,8 +39,14 @@ const Navbar = ({ categories }: NavbarProps) => {
       if (response.ok) {
         // Clear user data from localStorage
         localStorage.removeItem('user');
+        // Show a toast notification for successful logout
+        toast({
+          title: "Logout Berhasil",
+          description: "Anda telah berhasil logout dari akun Anda.",
+          variant: "default",
+        });
         // Refresh the page
-        window.location.reload();
+        router.push('/home');
       } else {
         console.error('Logout failed:', response.statusText);
       }
