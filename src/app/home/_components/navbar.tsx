@@ -20,11 +20,14 @@ const Navbar = ({ categories }: NavbarProps) => {
   const role = userObject ? userObject.role : null;
 
   const handleLogout = async () => {
+    const BEARER_TOKEN = localStorage.getItem('BEARER_TOKEN');
+    
     try {
       const response = await fetch(`${BASE_URL}/api/v1/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${BEARER_TOKEN}`,
           // Add any necessary authentication headers here if required
         },
       });

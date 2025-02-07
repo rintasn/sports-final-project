@@ -199,11 +199,13 @@ const Home: React.FC = () => {
         </div>  
       </div>  
 
-      <AddActivityDialog      
-        isOpen={isAddDialogOpen}      
-        onOpenChange={setIsAddDialogOpen}      
-        onAdd={() => fetchVenues(selectedSportType, selectedLocation)}
-      /> 
+      <div>
+        <AddActivityDialog      
+          isOpen={isAddDialogOpen}      
+          onOpenChange={setIsAddDialogOpen}      
+          onAdd={() => fetchVenues(selectedSportType, selectedLocation)}
+        /> 
+      </div>
     </main>
   );  
 };  

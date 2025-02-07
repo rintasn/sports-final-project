@@ -163,7 +163,7 @@ export default function AddActivityDialog({ isOpen, onOpenChange, onAdd }: AddAc
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[85vh] overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle>Add New Activity</DialogTitle>
           <DialogDescription>Fill in the details of the new activity.</DialogDescription>

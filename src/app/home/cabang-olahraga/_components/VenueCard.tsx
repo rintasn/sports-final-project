@@ -11,6 +11,13 @@ import {
   Tag,
   X
 } from 'lucide-react';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface SportActivity {
   id: number;
@@ -59,22 +66,38 @@ interface PaymentMethod {
   image_url: string;
 }
 
+interface TransactionFormData {
+  sport_activity_id: number;
+  payment_method_id: number;
+}
+
+const formSchema = z.object({
+  sport_activity_id: z.number().min(1, "Sport activity is required"),
+  payment_method_id: z.number().min(1, "Payment method is required"),
+});
+
 const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
   const [formData, setFormData] = useState({
-    sport_activity_id: '',
-    payment_method_id: ''
+    sport_activity_id: venue.id,
+    payment_method_id: 0
   });
   const [errors, setErrors] = useState({
     sport_activity_id: '',
     payment_method_id: ''
   });
 
+  const form = useForm<TransactionFormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: formData,
+  });
+
   useEffect(() => {
     const fetchPaymentMethods = async () => {
-      if (isModalOpen) {
+      if (isDialogOpen) {
         try {
           const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
           const response = await fetch(`${BASE_URL}/api/v1/payment-methods`);
@@ -90,11 +113,10 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
       }
     };
 
-    if (isModalOpen) {
+    if (isDialogOpen) {
       fetchPaymentMethods();
-      setFormData(prev => ({ ...prev, sport_activity_id: venue.id.toString() }));
     }
-  }, [isModalOpen, venue.id]);
+  }, [isDialogOpen]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('id-ID', {
@@ -123,7 +145,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
 
   const handleClose = () => {
     setIsModalOpen(false);
-    setFormData({ sport_activity_id: '', payment_method_id: '' });
+    setFormData({ sport_activity_id: venue.id, payment_method_id: 0 });
     setSelectedPaymentMethod(null);
     setErrors({ sport_activity_id: '', payment_method_id: '' });
   };
@@ -145,9 +167,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
     return !newErrors.sport_activity_id && !newErrors.payment_method_id;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (data: TransactionFormData) => {
     if (!validateForm()) return;
 
     const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
@@ -160,10 +180,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
           'Authorization': `Bearer ${BEARER_TOKEN}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          sport_activity_id: Number(formData.sport_activity_id),
-          payment_method_id: Number(formData.payment_method_id)
-        })
+        body: JSON.stringify(data)
       });
 
       const result = await response.json();
@@ -171,6 +188,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
       if (!result.error) {
         toast.success(result.message);
         onTransactionCreated();
+        setIsDialogOpen(false);
         handleClose();
       } else {
         toast.error(result.message);
@@ -183,7 +201,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
 
   const handlePaymentMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    setFormData(prev => ({ ...prev, payment_method_id: value }));
+    setFormData(prev => ({ ...prev, payment_method_id: Number(value) }));
     const selectedMethod = paymentMethods.find(method => method.id === Number(value));
     setSelectedPaymentMethod(selectedMethod || null);
   };
@@ -269,7 +287,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
 
           {/* Action Button */}
           <button 
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsDialogOpen(true)}
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
           >
             Join Event
@@ -290,6 +308,97 @@ const VenueCard: React.FC<VenueCardProps> = ({ venue, onTransactionCreated }) =>
       </div>
 
       {/* Transaction Modal */}
+      {isDialogOpen && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create Transaction</DialogTitle>
+              <DialogDescription>
+                Fill in the form below to create a transaction.
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-4">
+                <FormField
+                  control={form.control}
+                  name="sport_activity_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sport Activity</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        value={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a sport activity" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem
+                            key={venue.id}
+                            value={venue.id.toString()}
+                          >
+                            {venue.title}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="payment_method_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(Number(value));
+                          const selectedMethod = paymentMethods.find(method => method.id === Number(value));
+                          setSelectedPaymentMethod(selectedMethod || null);
+                        }}
+                        value={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a payment method" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {paymentMethods.map((method) => (
+                            <SelectItem
+                              key={method.id}
+                              value={method.id.toString()}
+                            >
+                              {method.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {selectedPaymentMethod && (
+                  <div className="mt-4">
+                    <p><strong>Virtual Account Number:</strong> {selectedPaymentMethod.virtual_account_number}</p>
+                    <p><strong>Virtual Account Name:</strong> {selectedPaymentMethod.virtual_account_name}</p>
+                    <img src={selectedPaymentMethod.image_url} alt={selectedPaymentMethod.virtual_account_name} className="mt-2" />
+                  </div>
+                )}
+                <DialogFooter>
+                  <Button type="submit">Create Transaction</Button>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Participants Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-[600px] w-full max-h-[90vh] overflow-y-auto">
