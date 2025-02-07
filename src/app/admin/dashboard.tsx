@@ -11,7 +11,6 @@ import ActivityDetailDrawer from "./_components/ActivityDetailDrawer";
 import SportCategoryDrawer from "./_components/SportCategoryDrawer";
 import { useToast } from "@/hooks/use-toast";
 import { LogOut } from 'lucide-react';
-import { useRouter } from 'next/router'; // Import the useRouter hook from next/router
 // src/app/page.tsx
 
 import { SportActivity } from "./_components/_schema/activity";
@@ -37,10 +36,8 @@ export default function Page() {
   const [selectedActivity, setSelectedActivity] = useState<SportActivity | null>(null);
   const { toast } = useToast();
   const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
-  const router = useRouter(); // Initialize the router object using the useRouter hook
 
   const fetchTransactions = async () => {
-    const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
     const API_ENDPOINT = `/api/v1/all-transaction?is_paginate=true&per_page=10&page=${currentPage}&search=${searchTerm}`;
     const BEARER_TOKEN = localStorage.getItem('BEARER_TOKEN');
 
@@ -90,21 +87,12 @@ export default function Page() {
           // Add any necessary authentication headers here if required
         },
       });
-  
+
       if (response.ok) {
         // Clear user data from localStorage
         localStorage.removeItem('user');
-        localStorage.removeItem('BEARER_TOKEN'); // Optionally clear the BEARER_TOKEN as well
-  
-        // Show success toast notification
-        toast({
-          title: 'Logout Successful',
-          description: 'You have been successfully logged out.',
-          variant: 'default', // You can customize the variant if needed
-        });
-  
-        // Redirect to the home page
-        router.push('/home');
+        // Refresh the page
+        window.location.href = '/login';
       } else {
         console.error('Logout failed:', response.statusText);
       }
@@ -112,7 +100,6 @@ export default function Page() {
       console.error('Error during logout:', error);
     }
   };
-  
 
   useEffect(() => {
     fetchTransactions();

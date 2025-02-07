@@ -59,7 +59,7 @@ const data = {
       items: [
         {
           title: "Profile",
-          url: "/admin/profile",
+          url: "/home/profile",
         },
       ],
     },
