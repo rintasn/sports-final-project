@@ -47,9 +47,9 @@ const BASE_URL = "https://sport-reservation-api-bootcamp.do.dibimbing.id";
     const fetchCategories = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Token not found in localStorage");
-        }
+        // if (!token) {
+        //   throw new Error("Token not found in localStorage");
+        // }
 
         const response = await fetch(
           `${BASE_URL}/api/v1/sport-categories?is_paginate=true&per_page=5&page=1`,
