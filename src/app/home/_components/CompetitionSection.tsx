@@ -47,7 +47,7 @@ const CompetitionSection = () => {
             </div>
           </div>
           <div className="text-center mt-8">
-            <button className="btn btn-primary">Lihat Kompetisi Terdaftar</button>
+            {/* <button className="btn btn-primary">Lihat Kompetisi Terdaftar</button> */}
           </div>
         </div>
       </div>
